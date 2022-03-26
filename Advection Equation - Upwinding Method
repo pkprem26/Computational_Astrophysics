@@ -1,0 +1,49 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+
+N = 42
+L= 2
+x, dx = np.linspace(-L, L, N, retstep=True)
+
+
+rho  = np.zeros(N)
+rho[np.abs(x) < 0.5] = 1
+
+rho_init = rho.copy()
+
+
+
+
+
+t = 0
+j =0
+tmax = 1
+dt = 0.01
+c = dt/dx
+
+while t <= tmax:
+  
+    
+    rho[0]   = rho[N - 2]
+    rho[N-1] = rho[1]
+
+    rho[1:-1] = rho[1:-1] - c * (rho[1:-1] - rho[:-2])
+    
+    
+    t+=dt
+
+
+    
+plt.title("Advection Equation")
+
+plt.plot(x,rho, "o-", label = "up")
+plt.plot(x,rho_init, "o-", label = "init")
+plt.legend()
+plt.xlim([-1.1*L,1.1*L])
+plt.ylim([-0.1,1.1*L/2])
+plt.text(0.75*L,0.8, '$t = $' + '{:.2f}'.format(t))
+
+plt.text(-2,0.5,r'$\frac{u_i^{n+1} - u_i^{n}}{\Delta t} +  \frac{u_i^n - u_{i-1}^n}{\Delta x} = 0$')
+plt.show()
