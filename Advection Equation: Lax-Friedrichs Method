@@ -1,0 +1,46 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+
+N = 42
+L= 2
+x, dx = np.linspace(-L, L, N, retstep=True)
+
+
+rho  = np.zeros(N)
+rho[np.abs(x) < 0.5] = 1
+
+rho_init = rho.copy()
+
+
+def lax(r, dtdx):
+
+    
+    r[0]   = r[N - 2]
+    rho[N-1] = rho[1]
+
+    left = 0.5*(r[2:] + r[1:-1]) - 0.5*(dx/dt)*(r[2:] - r[1:-1])
+    right = 0.5*(r[1:-1] + r[:-2]) - 0.5*(dx/dt)*(r[1:-1] - r[:-2]) 
+
+    r[1:-1] = r[1:-1] - c*(left - right)
+    return r
+
+
+t = 0
+j =0
+tmax = 1
+dt = 0.01
+c = dt/dx
+
+while t <= tmax:
+    rho = lax(rho, c)    
+    t+=dt
+
+plt.title("Advection Equation:  Lax Friedrichs method")
+plt.xlim([-1.1*L,1.1*L])
+plt.ylim([-0.1,1.1*L/2])
+plt.plot(x,rho, "o-", label = "lx")
+plt.plot(x,rho_init, "o-", label = "initial")
+plt.legend()
+plt.show()
